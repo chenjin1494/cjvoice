@@ -10,8 +10,10 @@
 
     <!-- Brush 资源（Foreground/Background 等属性直接使用 Brush，不要用 Color） -->
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
+    <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDarkColor}" />
     <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
     <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}" />
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackground}" />
     <SolidColorBrush x:Key="TextPrimary" Color="#212121" />
     <SolidColorBrush x:Key="TextSecondary" Color="#757575" />
 
@@ -39,7 +41,7 @@
                 <Setter Property="Background" Value="#BDBDBD" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource PrimaryDarkColor}" />
+                <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -50,7 +52,7 @@
 
     <!-- 卡片样式 -->
     <Style x:Key="Card" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource CardBackground}" />
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
         <Setter Property="CornerRadius" Value="12" />
         <Setter Property="Padding" Value="16" />
         <Setter Property="BorderThickness" Value="1" />
