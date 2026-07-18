@@ -223,7 +223,7 @@ public sealed class AudioReceiver : IDisposable
 
     // ─── VB-CABLE 设备检测 ─────────────────────────────────────
 
-    private static int FindVBCableDevice()
+    internal static int FindVBCableDevice()
     {
         for (int i = 0; i < WaveOut.DeviceCount; i++)
         {
