@@ -119,9 +119,12 @@
                     <TextBlock Grid.Column="2" x:Name="TotalText" Style="{StaticResource ValueText}" FontFamily="Consolas" FontSize="14" Foreground="{StaticResource TextSecondary}" Text="总计: 0 KB" />
                 </Grid>
                 <Grid Margin="0,4,0,0">
-                    <TextBlock Style="{StaticResource SectionLabel}" Text="输出设备: "/>
-                    <TextBlock x:Name="OutputDeviceText" Style="{StaticResource ValueText}" FontSize="12" Foreground="{StaticResource TextSecondary}">
-                    </TextBlock>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Style="{StaticResource SectionLabel}" Text="输出设备: "/>
+                    <TextBlock Grid.Column="1" x:Name="OutputDeviceText" Style="{StaticResource ValueText}" FontSize="12" Foreground="{StaticResource TextSecondary}" />
                 </Grid>
             </StackPanel>
         </Border>
