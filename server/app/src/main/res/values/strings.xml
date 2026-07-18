@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CJ Voice</string>
+    <string name="start_server">启动服务</string>
+    <string name="stop_server">停止服务</string>
+    <string name="status_idle">就绪</string>
+    <string name="status_listening">监听中...</string>
+    <string name="status_streaming">正在传输音频...</string>
+    <string name="status_error">错误</string>
+    <string name="channel_name_audio_service">音频服务</string>
+    <string name="channel_desc_audio_service">麦克风音频采集服务通知</string>
+    <string name="notification_text_streaming">正在通过 WiFi 传输麦克风音频</string>
+</resources>
