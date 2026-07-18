@@ -97,11 +97,11 @@ public sealed class AudioReceiver : IDisposable
         var deviceNumber = FindVBCableDevice();
         if (deviceNumber >= 0)
         {
-            Console.WriteLine($"使用 VB-CABLE 设备 (索引: {deviceNumber})");
+            Logger.InfoRelease($"使用 VB-CABLE 设备 (索引: {deviceNumber})");
         }
         else
         {
-            Console.WriteLine("未找到 VB-CABLE，使用默认输出设备");
+            Logger.InfoRelease("未找到 VB-CABLE，使用默认输出设备");
         }
 
         _waveOut = new WaveOutEvent
@@ -179,12 +179,12 @@ public sealed class AudioReceiver : IDisposable
         catch (OperationCanceledException) { }
         catch (SocketException ex)
         {
-            Console.WriteLine($"Socket 错误: {ex.Message}");
+            Logger.ErrorRelease($"Socket 错误: {ex.Message}");
             StateChanged?.Invoke(ReceiverState.Error);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"接收错误: {ex.Message}");
+            Logger.ErrorRelease($"接收错误: {ex.Message}");
             StateChanged?.Invoke(ReceiverState.Error);
         }
         finally
@@ -210,7 +210,7 @@ public sealed class AudioReceiver : IDisposable
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            Console.WriteLine($"播放错误: {ex.Message}");
+            Logger.ErrorRelease($"播放错误: {ex.Message}");
         }
     }
 

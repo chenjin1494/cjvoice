@@ -2,6 +2,7 @@ using NAudio.Wave;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static CJVoiceClient.Logger;
 
 namespace CJVoiceClient;
 
@@ -16,11 +17,14 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
+        InfoRelease("主窗口已创建");
+
         // 更新设备描述信息
         ShowOutputDevice();
 
         Closed += (_, _) =>
         {
+            InfoRelease("窗口关闭，清理资源");
             _uiTimer.Stop();
             _uiTimer.Dispose();
             _receiver?.Dispose();
@@ -35,6 +39,7 @@ public partial class MainWindow : Window
     private void ShowOutputDevice()
     {
         var deviceNumber = AudioReceiver.FindVBCableDevice();
+        InfoRelease($"检测音频输出设备: VB-CABLE 索引={deviceNumber}");
         if (deviceNumber >= 0)
         {
             var caps = WaveOut.GetCapabilities(deviceNumber);
@@ -69,11 +74,13 @@ public partial class MainWindow : Window
         _receiver.StateChanged += OnStateChanged;
         _receiver.BytesReceived += OnBytesReceived;
 
+        InfoRelease($"尝试连接到 {ip}:12345");
         _receiver.Start(ip);
     }
 
     private void DisconnectButton_Click(object sender, RoutedEventArgs e)
     {
+        InfoRelease("用户点击断开连接");
         if (_receiver != null)
         {
             _receiver.StateChanged -= OnStateChanged;
@@ -104,6 +111,7 @@ public partial class MainWindow : Window
 
     private void OnStateChanged(ReceiverState state)
     {
+        InfoRelease($"接收状态变更: {state}");
         _lastState = state;
         UpdateUIToSync();
         RefreshButtonState(state);
@@ -167,6 +175,8 @@ public partial class MainWindow : Window
     private void OnBytesReceived(int bytesPerSec)
     {
         _currentBytesPerSec = bytesPerSec;
+        // 只在调试模式打印速率日志，避免控制台刷屏
+        Info($"接收速率: {bytesPerSec / 1024.0:0.0} KB/s");
     }
 
     private void UpdateTrafficDisplay()
