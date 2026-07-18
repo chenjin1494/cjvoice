@@ -103,6 +103,9 @@ public partial class MainWindow : Window
 
     private void IpAddressBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
     {
+        // 注意：此事件在 InitializeComponent() 期间就会触发（XAML 设置了 Text="192.168."），
+        // 此时 ConnectButton 可能还未初始化，所以需要 null 检查。
+        if (ConnectButton == null) return;
         var ip = IpAddressBox.Text.Trim();
         ConnectButton.IsEnabled = ip.Length > 7;
     }
