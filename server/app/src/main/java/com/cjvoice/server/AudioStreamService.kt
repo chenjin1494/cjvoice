@@ -105,7 +105,7 @@ class AudioStreamService : Service() {
         val builder = Notification.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(text)
-            .setSmallIcon(android.R.drawable.ic_menu_mic)
+            .setSmallIcon(R.drawable.ic_notification_mic)
             .setOngoing(true)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

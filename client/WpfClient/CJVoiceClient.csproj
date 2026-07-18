@@ -7,7 +7,6 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>false</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
     <AssemblyName>CJVoiceClient</AssemblyName>
     <RootNamespace>CJVoiceClient</RootNamespace>
   </PropertyGroup>
