@@ -57,7 +57,7 @@ public sealed class AudioReceiver : IDisposable
         _receiveTask = Task.Run(() => ReceiveLoopAsync(ipAddress, _cts.Token));
 
         // 启动音频播放任务
-        Task.Run(() => PlaybackLoop(_cts.Token));
+        Task.Run(async () => await PlaybackLoopAsync(_cts.Token));
 
         StateChanged?.Invoke(ReceiverState.Connecting);
     }
@@ -158,7 +158,7 @@ public sealed class AudioReceiver : IDisposable
 
             try
             {
-                while (!ct.IsCancellationRequested && _tcpClient.Connected)
+                while (!ct.IsCancellationRequested)
                 {
                     var bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length, ct);
                     if (bytesRead == 0) break; // 连接关闭
@@ -197,21 +197,14 @@ public sealed class AudioReceiver : IDisposable
 
     // ─── 音频播放 ───────────────────────────────────────────────
 
-    private void PlaybackLoop(CancellationToken ct)
+    private async Task PlaybackLoopAsync(CancellationToken ct)
     {
         try
         {
             var reader = _audioChannel.Reader;
-            while (!ct.IsCancellationRequested)
+            await foreach (var chunk in reader.ReadAllAsync(ct))
             {
-                // 等待音频数据
-                var canRead = reader.WaitToReadAsync(ct).AsTask().GetAwaiter().GetResult();
-                if (!canRead) break;
-
-                while (reader.TryRead(out var chunk))
-                {
-                    _bufferedProvider?.AddSamples(chunk, 0, chunk.Length);
-                }
+                _bufferedProvider?.AddSamples(chunk, 0, chunk.Length);
             }
         }
         catch (OperationCanceledException) { }

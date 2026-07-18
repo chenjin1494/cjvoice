@@ -10,6 +10,7 @@ public partial class MainWindow : Window
     private AudioReceiver? _receiver;
     private readonly System.Timers.Timer _uiTimer;
     private ReceiverState _lastState = ReceiverState.Disconnected;
+    private int _currentBytesPerSec;
 
     public MainWindow()
     {
@@ -17,6 +18,13 @@ public partial class MainWindow : Window
 
         // 更新设备描述信息
         ShowOutputDevice();
+
+        Closed += (_, _) =>
+        {
+            _uiTimer.Stop();
+            _uiTimer.Dispose();
+            _receiver?.Dispose();
+        };
 
         // 定期更新 UI
         _uiTimer = new System.Timers.Timer(500);
@@ -89,13 +97,7 @@ public partial class MainWindow : Window
     private void IpAddressBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
     {
         var ip = IpAddressBox.Text.Trim();
-        var os = e.OriginalSource as TextBox;
-        // 自动添加点
-        if (ip.Length > 0)
-        {
-            var digits = ip.Where(c => c == '.' || char.IsDigit(c));
-            ConnectButton.IsEnabled = ip.Length > 7;
-        }
+        ConnectButton.IsEnabled = ip.Length > 7;
     }
 
     // ─── 事件回调 ───────────────────────────────────────────────
@@ -164,7 +166,7 @@ public partial class MainWindow : Window
 
     private void OnBytesReceived(int bytesPerSec)
     {
-        UpdateTrafficDisplay();
+        _currentBytesPerSec = bytesPerSec;
     }
 
     private void UpdateTrafficDisplay()
@@ -174,8 +176,12 @@ public partial class MainWindow : Window
         this.Dispatcher.Invoke(() =>
         {
             var total = _receiver.TotalBytesReceived;
-            // 通过计算上次调用以来的差值推算当前速度
-            TrafficText.Text = total > 0 ? $"{total / 1000} KB/s" : "0 KB/s";
+            var speedKb = _currentBytesPerSec / 1024.0;
+            TrafficText.Text = speedKb >= 1.0
+                ? $"{speedKb:0.0} KB/s"
+                : _currentBytesPerSec > 0
+                    ? $"{_currentBytesPerSec} B/s"
+                    : "0 KB/s";
             TotalText.Text = total > 1024 * 1024
                 ? $"总计: {total / (1024.0 * 1024.0):0.00} MB"
                 : $"总计: {total / 1024.0:0} KB";

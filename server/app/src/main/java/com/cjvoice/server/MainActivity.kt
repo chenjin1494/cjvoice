@@ -8,7 +8,6 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.cjvoice.server.databinding.ActivityMainBinding
@@ -28,16 +27,19 @@ class MainActivity : AppCompatActivity() {
                     binding.statusText.text = getString(R.string.status_listening)
                     binding.startButton.text = getString(R.string.stop_server)
                     binding.clientInfo.text = "等待客户端连接..."
+                    binding.clientInfo.visibility = android.view.View.VISIBLE
                 }
                 AudioStreamService.STATUS_STREAMING -> {
                     binding.statusText.text = getString(R.string.status_streaming)
                     val clientIp = intent.getStringExtra(AudioStreamService.EXTRA_CLIENT_IP) ?: ""
                     binding.clientInfo.text = "已连接客户端: $clientIp"
+                    binding.clientInfo.visibility = android.view.View.VISIBLE
                 }
                 AudioStreamService.STATUS_STOPPED -> {
                     binding.statusText.text = getString(R.string.status_idle)
                     binding.startButton.text = getString(R.string.start_server)
                     binding.clientInfo.text = ""
+                    binding.clientInfo.visibility = android.view.View.GONE
                 }
                 AudioStreamService.STATUS_ERROR -> {
                     binding.statusText.text = getString(R.string.status_error)
@@ -119,12 +121,14 @@ class MainActivity : AppCompatActivity() {
     // ─── 启动/停止服务 ───────────────────────────────────────────
 
     private fun startService() {
-        // 检查 WiFi 连接
+        // 检查 WiFi 连接并警告
         val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        if (wifiManager.isWifiEnabled) {
+        if (!wifiManager.isWifiEnabled) {
+            Toast.makeText(this, "WiFi 未开启，客户端可能无法连接", Toast.LENGTH_LONG).show()
+        } else {
             val info = wifiManager.connectionInfo
-            if (info != null && info.ssid != null && info.ssid != "<unknown ssid>") {
-                // WiFi 已连接
+            if (info == null || info.ssid == null || info.ssid == "<unknown ssid>") {
+                Toast.makeText(this, "未连接 WiFi 网络，客户端可能无法连接", Toast.LENGTH_LONG).show()
             }
         }
 
