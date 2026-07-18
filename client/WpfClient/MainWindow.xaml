@@ -30,7 +30,16 @@
         </StackPanel>
 
         <!-- IP 连接卡片 -->
-        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,8,0,8">
+        <Border Grid.Row="1" Margin="0,8,0,8">
+            <Border.Style>
+                <Style TargetType="Border" BasedOn="{StaticResource Card}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=DisconnectButton, Path=IsEnabled}" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <StackPanel>
                 <TextBlock Style="{StaticResource SectionLabel}" Text="Android 服务器地址" />
                 <Grid Margin="0,4,0,0">
@@ -57,16 +66,6 @@
                             IsEnabled="False" />
                 </Grid>
             </StackPanel>
-
-            <Border.Style>
-                <Style TargetType="Border" BasedOn="{StaticResource Card}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=DisconnectButton, Path=IsEnabled}" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
         </Border>
 
         <!-- 状态卡片 -->
